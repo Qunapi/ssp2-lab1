@@ -1,12 +1,13 @@
 import express from "express";
 import { postService } from "../services/postService.js";
 import multer from "multer";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 export const postRouter = express.Router();
 
 const upload = multer({ dest: "uploads/" });
 
-postRouter.post("/", upload.single("img"), async (req, res) => {
+postRouter.post("/", authMiddleware, upload.single("img"), async (req, res) => {
   const { header, content, date, description, tags, user } = req.body;
   const {
     file: { path: img },
@@ -25,7 +26,6 @@ postRouter.post("/", upload.single("img"), async (req, res) => {
 
 postRouter.get("/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(req.query, req.params);
 
   const post = await postService.getById(id);
   res.send({ post });

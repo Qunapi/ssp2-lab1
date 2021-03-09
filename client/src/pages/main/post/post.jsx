@@ -34,14 +34,10 @@ const Author = styled.div`
 `;
 
 const StyledCard = styled(Card)`
-  /* transition-duration: 5s; */
   transition: all 0.2s ease-out !important;
-  /* transition-duration: 0.6s !important; */
   &:hover {
-    /* transition-duration: 0÷6s; */
     box-shadow: 0px 4px 4px rgba(38, 38, 38, 0.2);
     transform: translate(1px, 1px);
-    /* border: 1px solid #cccccc; */
     background-color: white;
   }
 `;

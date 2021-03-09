@@ -47,7 +47,7 @@ const MainCmp = ({ posts }) => {
 export const Main = () => {
   const [posts, setPosts] = useState([]);
   useEffect(() => {
-    fetch(`${getBackendApi()}/post`)
+    fetch(`${getBackendApi()}/post`, { credentials: "include" })
       .then((response) => response.json())
       // eslint-disable-next-line no-shadow
       .then(({ posts }) => {

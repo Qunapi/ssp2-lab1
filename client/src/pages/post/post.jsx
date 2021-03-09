@@ -36,7 +36,6 @@ const Author = styled.div`
 `;
 
 export const PostComponent = ({ post }) => {
-  console.log({ post });
   if (!post) {
     return null;
   }
@@ -63,7 +62,7 @@ export const Post = () => {
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`${getBackendApi()}/post/${id}`)
+    fetch(`${getBackendApi()}/post/${id}`, { credentials: "include" })
       .then((response) => response.json())
       // eslint-disable-next-line no-shadow
       .then(({ post }) => {

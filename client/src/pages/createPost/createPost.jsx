@@ -53,6 +53,7 @@ export const CreatePost = () => {
     await fetch(`${getBackendApi()}/post`, {
       method: "post",
       body: formData,
+      credentials: "include",
     });
 
     toast.success("Post created");

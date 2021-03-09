@@ -37,7 +37,7 @@ export const UserPopover = ({ popover, closePopover }) => {
   const isLogged = !!login;
 
   const handleLogout = () => {
-    setLogin({ da: Math.random() });
+    setLogin(null);
   };
 
   const handleLogin = () => {
@@ -60,7 +60,7 @@ export const UserPopover = ({ popover, closePopover }) => {
       transformOrigin={{ vertical: "top", horizontal: "center" }}
     >
       <Container>
-        {!isLogged ? (
+        {isLogged ? (
           <Actions>
             <ActionButton onClick={handleLogout}>Logout</ActionButton>
             <ActionButton>

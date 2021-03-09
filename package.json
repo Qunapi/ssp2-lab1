@@ -19,5 +19,7 @@
     "url": "https://github.com/Qunapi/ssp2-lab1/issues"
   },
   "homepage": "https://github.com/Qunapi/ssp2-lab1#readme",
-  "dependencies": {}
+  "dependencies": {
+    "cookie-parser": "^1.4.5"
+  }
 }
