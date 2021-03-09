@@ -9,6 +9,11 @@ postRouter.post("/", async (req, res) => {
 });
 
 postRouter.get("/:id", async (req, res) => {
-  const result = await postService.getById();
-  res.send(result);
+  const post = await postService.getById();
+  res.send({ post });
+});
+
+postRouter.get("/", async (req, res) => {
+  const posts = await postService.getAll();
+  res.send({ posts });
 });
