@@ -9,8 +9,9 @@ const Wrapper = styled(Link)`
   flex-direction: column;
   max-width: 780px;
   padding: 8 0px;
-  margin-top: 16px;
   text-decoration: none;
+  width: 100%;
+  margin: 16px 16px 0;
 `;
 
 const Title = styled.h2`
@@ -47,7 +48,8 @@ const StyledCard = styled(Card)`
 
 export const Post = ({ post }) => {
   return (
-    <Wrapper to={`post/${post.id}`}>
+    // eslint-disable-next-line no-underscore-dangle
+    <Wrapper to={`post/${post._id}`}>
       <StyledCard>
         <Title>{post.header}</Title>
         <Tags>

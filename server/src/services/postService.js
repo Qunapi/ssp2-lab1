@@ -1,23 +1,28 @@
-import { Posts } from "../models/Post.js";
+import { Post } from "../models/Post.js";
 
 export class PostService {
-  async create({ title = "TITLE", text = "text", date = new Date(), file }) {
-    const newPost = new Posts({
-      title,
-      text,
+  async create(params) {
+    const { header, content, date, description, tags, img, user } = params;
+    const newPost = new Post({
+      header,
+      content,
       date,
-      file,
+      description,
+      tags,
+      img,
+      user: user._id,
     });
 
     return newPost.save();
   }
 
-  getById(id = "600fedd1fe34e985aed16937") {
-    return Posts.findById(id);
+  getById(id) {
+    
+    return Post.findById(id).exec();
   }
 
   getAll() {
-    return Posts.find();
+    return Post.find();
   }
 }
 

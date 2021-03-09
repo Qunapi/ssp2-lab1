@@ -25,6 +25,7 @@ module.exports = {
     "react/self-closing-comp": "off",
     "react/jsx-filename-extension": "off",
     "react/prop-types": "off",
+    "no-underscore-dangle": "off",
     "no-unused-vars": [
       "warn",
       {

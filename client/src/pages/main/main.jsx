@@ -1,12 +1,16 @@
 import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 import { ThemeProvider } from "@emotion/react";
 import { Post } from "./post/post";
 import { Header } from "../../components/header/header";
 import { theme } from "../theme";
+import { getBackendApi } from "../../helpers/getBackendApi";
 
 const MainComponent = styled.main`
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const post1 = {
@@ -25,18 +29,32 @@ export const post1 = {
   img: "1.jpg",
 };
 
-export const Main = () => {
-  const posts = [post1];
+const MainCmp = ({ posts }) => {
   return (
     <div>
       <ThemeProvider theme={theme}>
         <Header></Header>
         <MainComponent>
           {posts.map((post) => (
-            <Post key={`${post.header}`} post={post}></Post>
+            <Post key={`${post._id}`} post={post}></Post>
           ))}
         </MainComponent>
       </ThemeProvider>
     </div>
   );
+};
+
+export const Main = () => {
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    fetch(`${getBackendApi()}/post`)
+      .then((response) => response.json())
+      // eslint-disable-next-line no-shadow
+      .then(({ posts }) => {
+        setPosts(posts);
+      })
+      .catch((e) => console.error(e));
+  }, []);
+
+  return <MainCmp posts={posts}></MainCmp>;
 };

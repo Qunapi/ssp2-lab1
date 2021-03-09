@@ -1,5 +1,8 @@
 import styled from "@emotion/styled";
 import { ThemeProvider } from "@emotion/react";
+import { Suspense, useEffect, useState } from "react";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import { useParams } from "react-router";
 import { Tag, Tags } from "../../components/tags/Tags";
 import { post1 } from "../main/main";
 import { theme } from "../theme";
@@ -34,6 +37,9 @@ const Author = styled.div`
 
 export const PostComponent = ({ post }) => {
   console.log({ post });
+  if (!post) {
+    return null;
+  }
   return (
     <Main>
       <Container>
@@ -52,10 +58,26 @@ export const PostComponent = ({ post }) => {
 };
 
 export const Post = () => {
+  const [post, setPost] = useState(null);
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    fetch(`${getBackendApi()}/post/${id}`)
+      .then((response) => response.json())
+      // eslint-disable-next-line no-shadow
+      .then(({ post }) => {
+        setPost(post);
+      })
+      .catch((e) => console.error(e));
+  }, []);
+
   return (
     <ThemeProvider theme={theme}>
       <Header></Header>
-      <PostComponent post={post1}></PostComponent>
+      <Suspense fallback={<h1>helo</h1>}>
+        <PostComponent post={post}></PostComponent>
+      </Suspense>
     </ThemeProvider>
   );
 };

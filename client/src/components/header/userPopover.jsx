@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import styled from "@emotion/styled";
 import Button from "@material-ui/core/Button";
 import { Popover } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import { UseDialog } from "../../hooks/useDialog";
 import { LoginDialog } from "./loginDialog";
 import { RegistrationDialog } from "./registrationDialog";
@@ -11,9 +12,14 @@ const Container = styled.div`
   padding: 8px;
 `;
 
-const ActionButton = styled(Button)``;
+const ActionButton = styled(Button)`
+  a {
+    text-decoration: none;
+    color: black;
+  }
+`;
 
-const LogoutActions = styled.div`
+const Actions = styled.div`
   display: flex;
   flex-direction: column;
 `;
@@ -54,13 +60,18 @@ export const UserPopover = ({ popover, closePopover }) => {
       transformOrigin={{ vertical: "top", horizontal: "center" }}
     >
       <Container>
-        {isLogged ? (
-          <ActionButton onClick={handleLogout}>Logout</ActionButton>
+        {!isLogged ? (
+          <Actions>
+            <ActionButton onClick={handleLogout}>Logout</ActionButton>
+            <ActionButton>
+              <Link to="create">Create post</Link>
+            </ActionButton>
+          </Actions>
         ) : (
-          <LogoutActions>
+          <Actions>
             <ActionButton onClick={handleLogin}>Login</ActionButton>
             <ActionButton onClick={handleRegister}>Register</ActionButton>
-          </LogoutActions>
+          </Actions>
         )}
       </Container>
       <LoginDialog
