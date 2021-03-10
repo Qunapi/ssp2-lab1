@@ -10,11 +10,15 @@ userRouter.post("/", async (req, res) => {
   res.send(result);
 });
 
+userRouter.post("/auth/logout", async (req, res) => {
+  res.cookie("token", null, { httpOnly: true });
+  res.send({});
+});
+
 userRouter.post("/auth", async (req, res) => {
   const { login, password } = req.body;
   const result = await authService.authorize({ login, password });
   if (result.status) {
-    console.log("TOKEN!!!!");
     res.cookie("token", result.token, { httpOnly: true });
     res.send(result);
   } else {

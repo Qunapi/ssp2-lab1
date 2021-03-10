@@ -1,12 +1,11 @@
 import styled from "@emotion/styled";
 import { useContext } from "react";
-import { ThemeProvider } from "@emotion/react";
 import Card from "@material-ui/core/Card";
+import { useHistory } from "react-router";
 import { toast } from "react-toastify";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { Header } from "../../components/header/header";
-import { theme } from "../theme";
 import { getBackendApi } from "../../helpers/getBackendApi";
 import { MyContext } from "../../context/context";
 
@@ -36,7 +35,8 @@ const Submit = styled(Button)`
 `;
 
 export const CreatePost = () => {
-  const { login, setLogin } = useContext(MyContext);
+  const { login, setLogin, openLoginDialog } = useContext(MyContext);
+  const { push } = useHistory();
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -50,17 +50,23 @@ export const CreatePost = () => {
     formData.append("img", event.target.file.files[0]);
     formData.append("user", login);
 
-    await fetch(`${getBackendApi()}/post`, {
+    const result = await fetch(`${getBackendApi()}/post`, {
       method: "post",
       body: formData,
       credentials: "include",
     });
 
-    toast.success("Post created");
+    if (result.status === 401) {
+      toast.error("Auth error");
+      push("/");
+      openLoginDialog();
+    } else {
+      toast.success("Post created");
+    }
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Header></Header>
       <Main>
         <Card>
@@ -94,6 +100,6 @@ export const CreatePost = () => {
           </Form>
         </Card>
       </Main>
-    </ThemeProvider>
+    </>
   );
 };

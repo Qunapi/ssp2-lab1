@@ -1,9 +1,7 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { ThemeProvider } from "@emotion/react";
 import { Post } from "./post/post";
 import { Header } from "../../components/header/header";
-import { theme } from "../theme";
 import { getBackendApi } from "../../helpers/getBackendApi";
 
 const MainComponent = styled.main`
@@ -32,14 +30,12 @@ export const post1 = {
 const MainCmp = ({ posts }) => {
   return (
     <div>
-      <ThemeProvider theme={theme}>
-        <Header></Header>
-        <MainComponent>
-          {posts.map((post) => (
-            <Post key={`${post._id}`} post={post}></Post>
-          ))}
-        </MainComponent>
-      </ThemeProvider>
+      <Header></Header>
+      <MainComponent>
+        {posts.map((post) => (
+          <Post key={`${post._id}`} post={post}></Post>
+        ))}
+      </MainComponent>
     </div>
   );
 };

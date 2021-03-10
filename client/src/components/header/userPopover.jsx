@@ -4,9 +4,9 @@ import Button from "@material-ui/core/Button";
 import { Popover } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import { UseDialog } from "../../hooks/useDialog";
-import { LoginDialog } from "./loginDialog";
 import { RegistrationDialog } from "./registrationDialog";
 import { MyContext } from "../../context/context";
+import { getBackendApi } from "../../helpers/getBackendApi";
 
 const Container = styled.div`
   padding: 8px;
@@ -25,19 +25,23 @@ const Actions = styled.div`
 `;
 
 export const UserPopover = ({ popover, closePopover }) => {
-  const [loginDialog, closeLoginDialog, openLoginDialog] = UseDialog();
   const [
     registrationDialog,
     closeRegistrationDialog,
     openRegistrationDialog,
   ] = UseDialog();
 
-  const { login, setLogin } = useContext(MyContext);
+  const { login, setLogin, openLoginDialog } = useContext(MyContext);
 
   const isLogged = !!login;
 
   const handleLogout = () => {
     setLogin(null);
+    localStorage.setItem("user", "");
+    fetch(`${getBackendApi()}/user/auth/logout`, {
+      method: "post",
+      credentials: "include",
+    });
   };
 
   const handleLogin = () => {
@@ -74,10 +78,6 @@ export const UserPopover = ({ popover, closePopover }) => {
           </Actions>
         )}
       </Container>
-      <LoginDialog
-        closeLoginDialog={closeLoginDialog}
-        loginDialog={loginDialog}
-      ></LoginDialog>
       <RegistrationDialog
         registration={registrationDialog}
         closeRegistrationDialog={closeRegistrationDialog}

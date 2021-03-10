@@ -7,6 +7,7 @@ export const authMiddleware = (req, res, next) => {
     authService.authenticate(token);
   } catch (e) {
     if (e.message === "invalid token") {
+      res.cookie("token", null, { httpOnly: true });
       res.send(401);
       return;
     } else {

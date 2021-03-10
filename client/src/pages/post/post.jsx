@@ -72,11 +72,11 @@ export const Post = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
       <Header></Header>
       <Suspense fallback={<h1>helo</h1>}>
         <PostComponent post={post}></PostComponent>
       </Suspense>
-    </ThemeProvider>
+    </>
   );
 };

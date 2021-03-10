@@ -3,7 +3,7 @@ import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { toast } from "react-toastify";
 import { useContext } from "react";
-import { Dialog } from "@material-ui/core";
+import { Dialog, Typography } from "@material-ui/core";
 import { getBackendApi } from "../../helpers/getBackendApi";
 import { MyContext } from "../../context/context";
 
@@ -41,6 +41,8 @@ export const LoginDialog = ({ loginDialog, closeLoginDialog }) => {
 
     const data = await response.json();
     if (data) {
+      localStorage.setItem("user", JSON.stringify(data.user));
+
       setLogin({ ...data.user });
       closeLoginDialog();
       toast.success("Logged in");
@@ -52,8 +54,11 @@ export const LoginDialog = ({ loginDialog, closeLoginDialog }) => {
   return (
     <Dialog open={loginDialog} onClose={closeLoginDialog}>
       <Form onSubmit={handleSubmit}>
-        <TextField type="email" required name="login" label="Standard" />
-        <TextField name="password" required type="password" label="Standard" />
+        <Typography variant="h5" component="h2">
+          Login
+        </Typography>
+        <TextField type="email" required name="login" label="Login" />
+        <TextField name="password" required type="password" label="Password" />
         <Submit type="submit">Submit</Submit>
       </Form>
     </Dialog>

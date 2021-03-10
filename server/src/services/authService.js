@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 class AuthService {
   authenticate(token) {
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
-    console.log({ decoded });
     return decoded;
   }
 
