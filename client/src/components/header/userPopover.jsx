@@ -38,10 +38,6 @@ export const UserPopover = ({ popover, closePopover }) => {
   const handleLogout = () => {
     setLogin(null);
     localStorage.setItem("user", "");
-    fetch(`${getBackendApi()}/user/auth/logout`, {
-      method: "post",
-      credentials: "include",
-    });
   };
 
   const handleLogin = () => {

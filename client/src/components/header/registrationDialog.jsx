@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import { toast } from "react-toastify";
 import { Dialog } from "@material-ui/core";
-import { useContext } from "react";
-import { getBackendApi } from "../../helpers/getBackendApi";
+import { useContext, useEffect } from "react";
 import { MyContext } from "../../context/context";
 
 const Form = styled.form`
@@ -25,7 +25,23 @@ export const RegistrationDialog = ({
   registration,
   closeRegistrationDialog,
 }) => {
-  const { setLogin } = useContext(MyContext);
+  const { setLogin, socket } = useContext(MyContext);
+
+  useEffect(() => {
+    socket?.on("res/user/create", (msg) => {
+      if (msg.status === "success") {
+        localStorage.setItem("user", JSON.stringify(msg.user));
+        toast.success("Registration success");
+        setLogin({ ...msg.user });
+        closeRegistrationDialog();
+      } else {
+        toast.error("Auth error");
+      }
+    });
+
+    return () => socket?.off("res/user/create");
+  }, [socket]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (event.target.password.value !== event.target.password2.value) {
@@ -33,23 +49,11 @@ export const RegistrationDialog = ({
       alert("Passwords do not match");
       return;
     }
-    const response = await fetch(`${getBackendApi()}/user`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        login: event.target.login.value,
-        password: event.target.password.value,
-        name: event.target.name.value,
-      }),
-      credentials: "include",
+    socket.emit("req/user/create", {
+      login: event.target.login.value,
+      password: event.target.password.value,
+      name: event.target.name.value,
     });
-
-    const data = await response.json();
-
-    setLogin({ ...data });
-    closeRegistrationDialog();
   };
 
   return (

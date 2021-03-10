@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useContext, useEffect, useState } from "react";
 import { Post } from "./post/post";
 import { Header } from "../../components/header/header";
-import { getBackendApi } from "../../helpers/getBackendApi";
+import { MyContext } from "../../context/context";
 
 const MainComponent = styled.main`
   display: flex;
@@ -42,15 +43,23 @@ const MainCmp = ({ posts }) => {
 
 export const Main = () => {
   const [posts, setPosts] = useState([]);
+  const { socket } = useContext(MyContext);
+
   useEffect(() => {
-    fetch(`${getBackendApi()}/post`, { credentials: "include" })
-      .then((response) => response.json())
-      // eslint-disable-next-line no-shadow
-      .then(({ posts }) => {
-        setPosts(posts);
-      })
-      .catch((e) => console.error(e));
-  }, []);
+    socket?.on("res/posts", (msg) => {
+      if (msg.status === "success") {
+        setPosts(msg.posts);
+      } else {
+        toast.error("Error");
+      }
+    });
+
+    return () => socket?.off("res/posts");
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.emit("req/posts", {});
+  }, [socket]);
 
   return <MainCmp posts={posts}></MainCmp>;
 };

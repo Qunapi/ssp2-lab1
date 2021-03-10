@@ -2,9 +2,8 @@ import styled from "@emotion/styled";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import { toast } from "react-toastify";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Dialog, Typography } from "@material-ui/core";
-import { getBackendApi } from "../../helpers/getBackendApi";
 import { MyContext } from "../../context/context";
 
 const Form = styled.form`
@@ -23,32 +22,28 @@ const Submit = styled(Button)`
 `;
 
 export const LoginDialog = ({ loginDialog, closeLoginDialog }) => {
-  const { setLogin } = useContext(MyContext);
+  const { setLogin, socket } = useContext(MyContext);
+  useEffect(() => {
+    socket?.on("res/user/auth", (msg) => {
+      if (msg.status === "success") {
+        localStorage.setItem("user", JSON.stringify(msg.user));
+        setLogin({ ...msg.user });
+        closeLoginDialog();
+        toast.success("Logged in");
+      } else {
+        toast.error("Auth error");
+      }
+    });
+    return () => socket?.off("res/user/auth");
+  }, [socket]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const response = await fetch(`${getBackendApi()}/user/auth`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        login: event.target.login.value,
-        password: event.target.password.value,
-      }),
-      credentials: "include",
+    socket.emit("req/user/auth", {
+      login: event.target.login.value,
+      password: event.target.password.value,
     });
-
-    const data = await response.json();
-    if (data) {
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      setLogin({ ...data.user });
-      closeLoginDialog();
-      toast.success("Logged in");
-    } else {
-      toast.error("Auth error");
-    }
   };
 
   return (

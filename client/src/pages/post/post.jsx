@@ -1,13 +1,11 @@
 import styled from "@emotion/styled";
-import { ThemeProvider } from "@emotion/react";
-import { Suspense, useEffect, useState } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
+import { Suspense, useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { toast } from "react-toastify";
 import { Tag, Tags } from "../../components/tags/Tags";
-import { post1 } from "../main/main";
-import { theme } from "../theme";
 import { Header } from "../../components/header/header";
 import { getBackendApi } from "../../helpers/getBackendApi";
+import { MyContext } from "../../context/context";
 
 const Main = styled.main`
   display: flex;
@@ -58,23 +56,30 @@ export const PostComponent = ({ post }) => {
 
 export const Post = () => {
   const [post, setPost] = useState(null);
+  const { socket } = useContext(MyContext);
 
   const { id } = useParams();
 
   useEffect(() => {
-    fetch(`${getBackendApi()}/post/${id}`, { credentials: "include" })
-      .then((response) => response.json())
-      // eslint-disable-next-line no-shadow
-      .then(({ post }) => {
-        setPost(post);
-      })
-      .catch((e) => console.error(e));
-  }, []);
+    socket?.on("res/post", (msg) => {
+      if (msg.status === "success") {
+        setPost(msg.post);
+      } else {
+        toast.error("Error");
+      }
+    });
+
+    return () => socket?.off("res/post");
+  }, [socket]);
+
+  useEffect(() => {
+    socket?.emit("req/post", { id });
+  }, [socket]);
 
   return (
     <>
       <Header></Header>
-      <Suspense fallback={<h1>helo</h1>}>
+      <Suspense fallback={<h1>...Error</h1>}>
         <PostComponent post={post}></PostComponent>
       </Suspense>
     </>

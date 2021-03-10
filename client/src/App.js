@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ToastContainer } from "react-toastify";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { io } from "socket.io-client";
 import { ThemeProvider } from "@emotion/react";
 import { Main } from "./pages/main/main";
 import { Post } from "./pages/post/post";
@@ -11,24 +12,34 @@ import { ProtectedRoute } from "./helpers/authRoute";
 import { LoginDialog } from "./components/header/loginDialog";
 import { UseDialog } from "./hooks/useDialog";
 import { theme } from "./pages/theme";
+import { getBackendApi } from "./helpers/getBackendApi";
 
 function App() {
   const [login, setLogin] = useState(null);
+  const [socket, setSocket] = useState(null);
 
   useEffect(() => {
     try {
-      const user = localStorage.getItem("user");
+      const user = JSON.parse(localStorage.getItem("user"));
       setLogin(user);
     } catch (e) {
       setLogin(null);
     }
   }, []);
 
+  useEffect(() => {
+    const newSocket = io(`${getBackendApi()}`, {
+      extraHeaders: { token: login?.token },
+    });
+    setSocket(newSocket);
+    return () => newSocket.close();
+  }, [login]);
+
   const [loginDialog, closeLoginDialog, openLoginDialog] = UseDialog();
 
   return (
     <div className="App">
-      <MyContext.Provider value={{ login, setLogin, openLoginDialog }}>
+      <MyContext.Provider value={{ login, setLogin, openLoginDialog, socket }}>
         <ThemeProvider theme={theme}>
           <Router>
             <Switch>

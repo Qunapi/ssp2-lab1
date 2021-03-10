@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import Card from "@material-ui/core/Card";
 import { useHistory } from "react-router";
 import { toast } from "react-toastify";
@@ -35,8 +35,22 @@ const Submit = styled(Button)`
 `;
 
 export const CreatePost = () => {
-  const { login, setLogin, openLoginDialog } = useContext(MyContext);
+  const { login, socket, openLoginDialog } = useContext(MyContext);
   const { push } = useHistory();
+
+  useEffect(() => {
+    socket?.on("res/post/create", (msg) => {
+      if (msg.status === "success") {
+        toast.success("Post created");
+      } else {
+        toast.error("Error");
+        openLoginDialog();
+        push("/");
+      }
+    });
+
+    return () => socket?.off("res/post/create");
+  }, [socket]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -50,19 +64,28 @@ export const CreatePost = () => {
     formData.append("img", event.target.file.files[0]);
     formData.append("user", login);
 
-    const result = await fetch(`${getBackendApi()}/post`, {
-      method: "post",
-      body: formData,
-      credentials: "include",
+    socket?.emit("req/post/create", {
+      header: event.target.header.value,
+      content: event.target.content.value,
+      date: new Date(),
+      description: event.target.description.value,
+      tags,
+      user: login,
+      img: event.target.file.files[0],
     });
 
-    if (result.status === 401) {
-      toast.error("Auth error");
-      push("/");
-      openLoginDialog();
-    } else {
-      toast.success("Post created");
-    }
+    // const result = await fetch(`${getBackendApi()}/post`, {
+    //   method: "post",
+    //   body: formData,
+    //   credentials: "include",
+    // });
+
+    // if (result.status === 401) {
+    //   toast.error("Auth error");
+    //   push("/");
+    // } else {
+    //   toast.success("Post created");
+    // }
   };
 
   return (
