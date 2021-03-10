@@ -12,6 +12,8 @@ import { authService } from "./services/authService.js";
 import { userService } from "./services/userService.js";
 import { postService } from "./services/postService.js";
 import { promises as fs } from "fs";
+import { graphqlHTTP } from "express-graphql";
+import { schema } from "./schema.js";
 
 dotenv.config();
 
@@ -23,6 +25,14 @@ app.use(cookieParser());
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+app.use(
+  "/graphql",
+  graphqlHTTP({
+    schema,
+    graphiql: true,
+  })
+);
 
 app.use("/post", postRouter);
 app.use("/user", userRouter);
@@ -68,7 +78,6 @@ io.on("connection", async (socket) => {
 
   socket.on("req/post", async ({ id }) => {
     const post = await postService.getById(id);
-    console.log("qq");
     socket.emit("res/post", {
       status: "success",
       post,
@@ -78,7 +87,6 @@ io.on("connection", async (socket) => {
   socket.on(
     "req/post/create",
     async ({ header, content, date, description, tags, user, img }) => {
-      console.log(user);
       const filePath = `uploads/${Math.random()}`;
       await fs.writeFile(filePath, img);
 

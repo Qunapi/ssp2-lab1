@@ -8,7 +8,6 @@ class UserService {
   async create({ login, password, name }) {
     const salt = await bcrypt.genSalt(saltRounds);
     const hash = bcrypt.hashSync(password, salt);
-    console.log("HELLO");
 
     let user = new User({ login, hash, name });
     const token = jwt.sign({ user }, process.env.SECRET_KEY, {
@@ -17,7 +16,6 @@ class UserService {
     user = (await user.save()).toObject();
     user.token = token;
 
-    console.log(user, token, token.token);
     return user;
   }
 
