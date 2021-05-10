@@ -9,15 +9,17 @@ class AuthService {
   }
 
   async authorize({ login, password }) {
-    const user = await userService.getByLogin({ login });
+    let user = await userService.getByLogin({ login });
     if (!user) {
       return false;
     }
+    user = user.toObject();
     const { hash } = user;
     const status = await bcrypt.compare(password, hash);
     const token = jwt.sign({ user }, process.env.SECRET_KEY, {
       expiresIn: "7 days",
     });
+
     return { status, token, user };
   }
 }

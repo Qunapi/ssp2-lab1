@@ -12,7 +12,7 @@ export const Tag = styled.div`
   }};
   padding-right: 4px;
 
-  &:not(:first-child) {
+  &:not(:first-of-type) {
     padding-left: 4px;
     border-left: 1px solid #5e6973;
   }

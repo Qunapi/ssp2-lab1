@@ -22,6 +22,7 @@ const Title = styled.h2`
 
 const Img = styled.img`
   border-radius: 0px;
+  width: 100%;
 `;
 
 const Description = styled.div`
