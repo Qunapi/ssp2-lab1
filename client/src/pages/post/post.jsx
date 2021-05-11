@@ -1,31 +1,32 @@
 import styled from "@emotion/styled";
-import { ThemeProvider } from "@emotion/react";
 import { Suspense, useEffect, useState } from "react";
-import CircularProgress from "@material-ui/core/CircularProgress";
 import { useParams } from "react-router";
 import { Tag, Tags } from "../../components/tags/Tags";
-import { post1 } from "../main/main";
-import { theme } from "../theme";
 import { Header } from "../../components/header/header";
 import { getBackendApi } from "../../helpers/getBackendApi";
 
 const Main = styled.main`
   display: flex;
   justify-content: center;
+  width: 100%;
+  margin: 0 12px;
 `;
 
-const Container = styled.main`
+const Container = styled.div`
   display: flex;
   max-width: 780px;
   flex-direction: column;
   margin-top: 20px;
+  width: 100%;
 `;
 
 const ArticleHeader = styled.h1`
   margin: 8px 0;
 `;
 
-const Img = styled.img``;
+const Img = styled.img`
+  width: 100%;
+`;
 
 const Content = styled.div`
   margin: 8px 0px;

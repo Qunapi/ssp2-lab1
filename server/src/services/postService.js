@@ -17,12 +17,11 @@ export class PostService {
   }
 
   getById(id) {
-    
     return Post.findById(id).exec();
   }
 
-  getAll() {
-    return Post.find();
+  findAll(search) {
+    return Post.find({ header: { $regex: search } });
   }
 }
 

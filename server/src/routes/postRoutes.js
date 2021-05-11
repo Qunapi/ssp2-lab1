@@ -32,6 +32,7 @@ postRouter.get("/:id", async (req, res) => {
 });
 
 postRouter.get("/", async (req, res) => {
-  const posts = await postService.getAll();
+  const { search } = req.query;
+  const posts = await postService.findAll(search);
   res.send({ posts });
 });
