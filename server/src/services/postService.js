@@ -1,4 +1,4 @@
-import { Post } from "../models/Post.js";
+import { Post } from '../models/Post.js';
 
 export class PostService {
   async create(params) {
@@ -17,7 +17,6 @@ export class PostService {
   }
 
   getById(id) {
-    
     return Post.findById(id).exec();
   }
 

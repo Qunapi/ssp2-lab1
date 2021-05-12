@@ -5,9 +5,9 @@ import {
   GraphQLSchema,
   GraphQLList,
   GraphQLNonNull,
-} from "graphql";
-import { postService } from "./services/postService";
-import { userService } from "./services/userService";
+} from 'graphql';
+import { postService } from './services/postService.js';
+import { userService } from './services/userService.js';
 
 // const customers = [
 //   { id: 1, name: "john", email: "and", age: 4 },
@@ -16,7 +16,7 @@ import { userService } from "./services/userService";
 // ];
 
 const UserType = new GraphQLObjectType({
-  name: "User",
+  name: 'User',
   fields: () => ({
     login: { type: GraphQLString },
     hash: { type: GraphQLString },
@@ -26,20 +26,20 @@ const UserType = new GraphQLObjectType({
 });
 
 const PostType = new GraphQLObjectType({
-  name: "Post",
+  name: 'Post',
   fields: () => ({
     header: { type: GraphQLString },
     content: { type: GraphQLString },
     date: { type: GraphQLInt },
     tags: { type: GraphQLList(GraphQLString) },
     img: { type: GraphQLString },
-    user: { type: GraphQLUser },
+    user: { type: UserType },
     id: { type: GraphQLString },
   }),
 });
 
 const RootQuery = new GraphQLObjectType({
-  name: "RootQueryType",
+  name: 'RootQueryType',
   fields: {
     customer: {
       type: UserType,
